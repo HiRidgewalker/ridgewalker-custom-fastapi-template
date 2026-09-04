@@ -32,6 +32,20 @@ uv run uvicorn main:app --reload
 
 健康检查会执行 `SELECT 1`。MySQL 不可用时接口返回 `503`，应用本身仍可启动。
 
+## 响应结构
+
+接口统一返回 `ResponseSchema[业务 Schema]`：
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {}
+}
+```
+
+业务 Schema 中的 `datetime` 字段按 ISO 8601 格式输出。路由不存在、请求字段校验失败、项目自定义异常与未知异常也使用相同结构，其中请求字段校验失败的 `data` 会列出字段位置、原因和错误类型。
+
 ## 分层约束
 
 业务调用方向固定为 `controller`、`service`、`dao`。数据库会话由 `client` 层统一创建，Controller 通过 `DBSessionDependency` 注入 `db_session` 后显式传给 Service，Service 再按需传给 DAO。事务提交和回滚由会话上下文统一管理。
