@@ -1,19 +1,17 @@
-class AppError(Exception):
+class AppException(Exception):
     """作为项目内可预期异常的统一基类。"""
 
-    def __init__(self, code: str, message: str, status_code: int) -> None:
+    def __init__(
+        self,
+        code: int,
+        message: str,
+        data: dict[str, object] | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
-        self.status_code = status_code
+        self.data = {} if data is None else data.copy()
 
 
-class DatabaseError(AppError):
+class DatabaseException(AppException):
     """表示数据库连接或语句执行失败。"""
-
-    def __init__(self, message: str) -> None:
-        super().__init__(
-            code="DATABASE_UNAVAILABLE",
-            message=message,
-            status_code=503,
-        )

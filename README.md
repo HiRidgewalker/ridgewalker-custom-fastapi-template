@@ -34,4 +34,4 @@ uv run uvicorn main:app --reload
 
 ## 分层约束
 
-业务调用方向固定为 `controller`、`service`、`dao`。数据库会话由 `client` 层统一创建，并通过 FastAPI 依赖注入交给 Service；事务提交和回滚由会话上下文管理。
+业务调用方向固定为 `controller`、`service`、`dao`。数据库会话由 `client` 层统一创建，Controller 通过 `DBSessionDependency` 注入 `db_session` 后显式传给 Service，Service 再按需传给 DAO。事务提交和回滚由会话上下文统一管理。

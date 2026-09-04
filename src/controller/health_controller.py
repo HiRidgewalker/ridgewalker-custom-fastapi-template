@@ -1,13 +1,10 @@
-from typing import Annotated
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Depends
-
+from src.client.database_client import DBSessionDependency
 from src.schema.health_schema import HealthRead
-from src.service.health_service import HealthService, get_health_service
+from src.service.health_service import HealthService
 
 router = APIRouter(prefix="/health", tags=["health"])
-
-HealthServiceDep = Annotated[HealthService, Depends(get_health_service)]
 
 
 class HealthController:
@@ -15,6 +12,6 @@ class HealthController:
 
     @staticmethod
     @router.get("")
-    async def get_health(service: HealthServiceDep) -> HealthRead:
+    async def get_health(db_session: DBSessionDependency) -> HealthRead:
         """检查应用连接的 MySQL 是否可用。"""
-        return await service.check_health()
+        return await HealthService.check_health(db_session)
