@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Module",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "${input:debugModule}",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "debugModule",
+      "type": "promptString",
+      "description": "要调试的完整包名，如 src.services.user.handler",
+      "default": ""
+    }
+  ]
+}
