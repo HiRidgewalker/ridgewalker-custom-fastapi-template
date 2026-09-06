@@ -9,5 +9,9 @@ dependencies = [
     "fastapi>=0.141.1",
     "pydantic-settings>=2.15.0",
     "sqlalchemy>=2.0,<3.0",
+    "tiny-struct-log",
     "uvicorn[standard]>=0.52.4",
 ]
+
+[tool.uv.sources]
+tiny-struct-log = { git = "https://github.com/HiRidgewalker/tiny-struct-log.git", tag = "V1.0.0" }
