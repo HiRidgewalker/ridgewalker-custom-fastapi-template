@@ -101,7 +101,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.141.1" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
     { name = "sqlalchemy", specifier = ">=2.0,<3.0" },
-    { name = "tiny-struct-log", git = "https://github.com/HiRidgewalker/tiny-struct-log.git?tag=V1.0.0" },
+    { name = "tiny-struct-log", git = "https://github.com/HiRidgewalker/tiny-struct-log.git?tag=V1.1.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.4" },
 ]
 
@@ -271,7 +271,7 @@ wheels = [
 [[package]]
 name = "tiny-struct-log"
 version = "0.1.0"
-source = { git = "https://github.com/HiRidgewalker/tiny-struct-log.git?tag=V1.0.0#31847332fb18f343e14f4cb5bf7f882e8540ec4f" }
+source = { git = "https://github.com/HiRidgewalker/tiny-struct-log.git?tag=V1.1.0#84a02636d66b7289eb90002d3b1b2e3ffc94986f" }
 
 [[package]]
 name = "typing-extensions"

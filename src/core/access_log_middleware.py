@@ -1,11 +1,10 @@
-import logging
 from time import perf_counter
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
-logger = logging.getLogger("app.access")
+from src.util.log_util import general_logger
 
 
 class AccessLogMiddleware(BaseHTTPMiddleware):
@@ -26,12 +25,14 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             return response
         finally:
             duration_ms = round((perf_counter() - started_at) * 1000, 2)
-            logger.info(
+            general_logger.info(
                 "request completed",
                 extra={
-                    "method": request.method,
-                    "path": request.url.path,
-                    "status_code": status_code,
-                    "duration_ms": duration_ms,
+                    "data": {
+                        "method": request.method,
+                        "path": request.url.path,
+                        "status_code": status_code,
+                        "duration_ms": duration_ms,
+                    },
                 },
             )

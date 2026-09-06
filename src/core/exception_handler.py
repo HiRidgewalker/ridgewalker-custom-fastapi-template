@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -13,8 +11,7 @@ from src.core.constants import (
 )
 from src.core.exception import AppException
 from src.schema.response_schema import ResponseSchema, ValidationErrorDetail
-
-logger = logging.getLogger("app.exception")
+from src.util.log_util import general_logger
 
 
 def _build_json_response(status_code: int, response: BaseModel) -> JSONResponse:
@@ -26,9 +23,9 @@ def _build_json_response(status_code: int, response: BaseModel) -> JSONResponse:
 
 async def handle_app_exception(request: Request, exc: AppException) -> JSONResponse:
     """记录可预期异常并转换为 HTTP 响应。"""
-    logger.warning(
+    general_logger.warning(
         "application exception",
-        extra={"error_code": exc.code, "path": request.url.path},
+        extra={"data": {"error_code": exc.code, "path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](
         code=exc.code,
@@ -46,9 +43,9 @@ async def handle_http_exception(
     is_route_not_found = exc.status_code == NOT_FOUND_CODE
     message = "请求路由不存在" if is_route_not_found else str(exc.detail)
     data = {"path": request.url.path} if is_route_not_found else {}
-    logger.info(
+    general_logger.info(
         "http exception",
-        extra={"error_code": exc.status_code, "path": request.url.path},
+        extra={"data": {"error_code": exc.status_code, "path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](
         code=exc.status_code,
@@ -71,12 +68,14 @@ async def handle_request_validation_exception(
         )
         for error in exc.errors()
     ]
-    logger.info(
+    general_logger.info(
         "request validation exception",
         extra={
-            "error_code": UNPROCESSABLE_ENTITY_CODE,
-            "error_count": len(error_details),
-            "path": request.url.path,
+            "data": {
+                "error_code": UNPROCESSABLE_ENTITY_CODE,
+                "error_count": len(error_details),
+                "path": request.url.path,
+            },
         },
     )
     response = ResponseSchema[list[ValidationErrorDetail]](
@@ -89,9 +88,9 @@ async def handle_request_validation_exception(
 
 async def handle_unknown_error(request: Request, exc: Exception) -> JSONResponse:
     """记录未知异常并返回不包含内部细节的 HTTP 响应。"""
-    logger.exception(
+    general_logger.exception(
         "unhandled application error",
-        extra={"path": request.url.path},
+        extra={"data": {"path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](
         code=INTERNAL_SERVER_ERROR_CODE,
