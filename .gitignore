@@ -8,10 +8,11 @@ __pycache__/
 
 # custom exclude
 .env
-# AGENTS.md
+AGENTS.md
 
-# .agents/
+.agents/
 .codex/
 .cursor/
 .claude/
-# hiduck/
+hiduck/
+
