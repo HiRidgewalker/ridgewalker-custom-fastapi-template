@@ -10,6 +10,14 @@ sync:
 run:
     uv run uvicorn main:app --reload
 
+# 向 RabbitMQ 声明交换机、队列和绑定。
+topology:
+    uv run python -m src.client.celery_client.celery_topology
+
+# 启动异步 ping Worker，只消费 template.ping。
+worker:
+    uv run celery -A celery_worker:celery_app worker --queues=template.ping --concurrency=1 --loglevel=INFO
+
 # 根据当前模型与数据库结构生成迁移文件。
 revision $MESSAGE:
     uv run alembic revision --autogenerate -m "$MESSAGE"

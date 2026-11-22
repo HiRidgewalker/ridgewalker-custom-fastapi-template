@@ -15,3 +15,7 @@ class AppException(Exception):
 
 class DatabaseException(AppException):
     """表示数据库连接或语句执行失败。"""
+
+
+class CeleryException(AppException):
+    """表示 RabbitMQ 连接、队列声明或任务投递失败。"""

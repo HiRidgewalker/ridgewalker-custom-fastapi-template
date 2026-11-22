@@ -23,8 +23,9 @@ def _build_json_response(status_code: int, response: BaseModel) -> JSONResponse:
 
 async def handle_app_exception(request: Request, exc: AppException) -> JSONResponse:
     """记录可预期异常并转换为 HTTP 响应。"""
-    general_logger.warning(
+    general_logger.exception(
         "application exception",
+        exc_info=exc,
         extra={"data": {"error_code": exc.code, "path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](
@@ -43,8 +44,9 @@ async def handle_http_exception(
     is_route_not_found = exc.status_code == NOT_FOUND_CODE
     message = "请求路由不存在" if is_route_not_found else str(exc.detail)
     data = {"path": request.url.path} if is_route_not_found else {}
-    general_logger.info(
+    general_logger.exception(
         "http exception",
+        exc_info=exc,
         extra={"data": {"error_code": exc.status_code, "path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](
@@ -68,8 +70,9 @@ async def handle_request_validation_exception(
         )
         for error in exc.errors()
     ]
-    general_logger.info(
+    general_logger.exception(
         "request validation exception",
+        exc_info=exc,
         extra={
             "data": {
                 "error_code": UNPROCESSABLE_ENTITY_CODE,
@@ -90,6 +93,7 @@ async def handle_unknown_error(request: Request, exc: Exception) -> JSONResponse
     """记录未知异常并返回不包含内部细节的 HTTP 响应。"""
     general_logger.exception(
         "unhandled application error",
+        exc_info=exc,
         extra={"data": {"path": request.url.path}},
     )
     response = ResponseSchema[dict[str, object]](

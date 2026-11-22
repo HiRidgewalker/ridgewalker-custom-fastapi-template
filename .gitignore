@@ -10,9 +10,10 @@ __pycache__/
 .env
 AGENTS.md
 
-.agents/
+.agents
 .codex/
 .cursor/
 .claude/
-hiduck/
+hiduck
 
+log/

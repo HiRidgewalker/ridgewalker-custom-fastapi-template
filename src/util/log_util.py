@@ -6,7 +6,7 @@ general_logger = create_logger(
     persist=True,
     console_level="debug",
     persist_level="info",
-    log_dir="/home/hiyoungman/apps/fastapi-custom-template/log",
+    log_dir="log",
     max_bytes=10 * 1024 * 1024,
     backup_count=5,
 )

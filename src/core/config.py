@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     database_name: str = "app"
     database_user: str = ""
     database_password: SecretStr = SecretStr("")
+    rabbitmq_host: str = "127.0.0.1"
+    rabbitmq_port: int = Field(default=5672, ge=1, le=65535)
+    rabbitmq_username: str = ""
+    rabbitmq_password: SecretStr = SecretStr("")
+    rabbitmq_virtual_host: str = "/"
+    rabbitmq_connect_timeout_seconds: int = Field(default=5, ge=1)
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -52,6 +58,21 @@ class Settings(BaseSettings):
     def _validate_database_password(cls, value: SecretStr) -> SecretStr:
         if not value.get_secret_value():
             raise ValueError("数据库密码不能为空")
+        return value
+
+    @field_validator("rabbitmq_host", "rabbitmq_username", "rabbitmq_virtual_host")
+    @classmethod
+    def _validate_required_rabbitmq_text(cls, value: str) -> str:
+        stripped_value = value.strip()
+        if not stripped_value:
+            raise ValueError("RabbitMQ 配置不能为空")
+        return stripped_value
+
+    @field_validator("rabbitmq_password")
+    @classmethod
+    def _validate_rabbitmq_password(cls, value: SecretStr) -> SecretStr:
+        if not value.get_secret_value():
+            raise ValueError("RabbitMQ 密码不能为空")
         return value
 
 
