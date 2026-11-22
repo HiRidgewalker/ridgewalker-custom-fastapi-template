@@ -15,6 +15,7 @@ class HealthDao:
         try:
             result = await db_session.execute(text("SELECT 1"))
         except SQLAlchemyError as exc:
+            await db_session.rollback()
             raise DatabaseException(
                 code=SERVICE_UNAVAILABLE_CODE,
                 message="MySQL 健康检查执行失败",

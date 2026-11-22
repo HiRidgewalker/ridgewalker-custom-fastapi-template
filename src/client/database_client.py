@@ -31,8 +31,8 @@ transaction_session_maker = async_sessionmaker(
 
 
 async def get_transaction_session() -> AsyncGenerator[AsyncSession, None]:
-    """为单次请求提供自动提交或回滚的事务会话。"""
-    async with transaction_session_maker.begin() as db_session:
+    """为单次请求提供自动关闭的会话，事务由 DAO 自行管理。"""
+    async with transaction_session_maker() as db_session:
         yield db_session
 
 
